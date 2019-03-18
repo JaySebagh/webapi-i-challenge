@@ -19,10 +19,14 @@ server.get('/api/users', (req, res) => {
     db
     .find()
     .then(users => {
-        res.status(200).json(users)
+        if(user) {
+            res.status(200).json(users)
+        } else {
+            res.status(404).json({ message: "The user with the specified ID does not exist." })
+        }
     })
     .catch(err => {
-        res.status(err.code).json({ success: false, message: err.message })
+        res.status(500).json({ success: false, message: "The user information could not be retrieved." })
     })
 })
 
@@ -33,10 +37,14 @@ server.post('/api/users', (req, res) => {
     db
     .insert(user)
     .then(users => {
-        res.status(201).json({ success: true, users });
+        if(users) {
+            res.status(201).json({ success: true, users });
+        } else {
+            res.status(400).json({ message: "Please provide name and bio for the user." })
+        }
     })
-    .catch(({ code, message }) => {
-        res.status(code).json({ success: false, message });
+    .catch(({ message }) => {
+        res.status(500).json({ success: false, message: "There was an error while saving the user to the database"  });
     });
 });
 
@@ -47,10 +55,14 @@ server.delete('/api/users/:id', (req, res) => {
     db
     .remove(userId)
     .then(deleted => {
-        res.status(204).end();
+        if(users) {
+            res.status(204).end();
+        } else {
+            res.status(404).json({ message: "The user with the specified ID does not exist." })
+        }
     })
     .catch(({ code, message }) => {
-        res.status(code).json({ success: false, message });
+        res.status(code).json({ success: false, message: "The user could not be removed" });
     });
 });
 

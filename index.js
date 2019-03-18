@@ -54,6 +54,25 @@ server.delete('/api/users/:id', (req, res) => {
     });
 });
 
+// The U in CRUD
+server.put('/api/users/:id', (req, res) => {
+    const { id } = req.params;
+    const changes = req.body;
+
+    db
+    .update(id, changes)
+    .then(updated => {
+        if(updated) {
+            res.status(200).json({ success: true, updated });
+        } else {
+            res.status(404).json({ success: false, message: "Cannot find user you are looking for" })
+        }
+    })
+    .catch (({ code, message }) => {
+        res.status(code).json({ success: false, message });
+    });
+});
+
 server.listen(4000, () => {
     console.log('\n*** Running on port 4k ***\n')
 })

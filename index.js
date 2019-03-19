@@ -9,21 +9,12 @@ const server = express(); // creates new http server
 // middleware
 server.use(express.json());
 
-// routes === endpoints
-server.get('/', (req, res) => {
-    res.send('Hello World!')
-});
-
 // The R in CRUD
 server.get('/api/users', (req, res) => {
     db
     .find()
     .then(users => {
-        if(user) {
             res.status(200).json(users)
-        } else {
-            res.status(404).json({ message: "The user with the specified ID does not exist." })
-        }
     })
     .catch(err => {
         res.status(500).json({ success: false, message: "The user information could not be retrieved." })
@@ -47,7 +38,7 @@ server.get('/api/users/:id', (req, res) => {
 
 
 // The C in CRUD
-server.post('/api/users', (req, res) => {
+server.user('/api/users', (req, res) => {
     const user = req.body;
     db
     .insert(user)
@@ -73,7 +64,7 @@ server.delete('/api/users/:id', (req, res) => {
         }
     })
     .catch(({ code, message }) => {
-        res.status(code).json({ success: false, message: "The user could not be removed" });
+        res.status(code).json({ success: false, message: "The users could not be removed" });
     });
 });
 
@@ -85,11 +76,7 @@ server.put('/api/users/:id', (req, res) => {
     db
     .update(id, changes)
     .then(updated => {
-        if(updated === 0) {
             res.status(200).json({ success: true, updated });
-        } else {
-            res.status(404).json({ success: false, message: "Cannot find user you are looking for" })
-        }
     })
     .catch (({ code, message }) => {
         res.status(code).json({ success: false, message });
